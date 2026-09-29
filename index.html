@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد السيرة الذاتية — ATS Pro AI</title>
+<meta name="theme-color" content="#2563eb">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Cairo:wght@400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+  --accent-light: #dbeafe;
+  --text: #0f172a;
+  --text-soft: #475569;
+  --text-muted: #94a3b8;
+  --bg: #eef2f7;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --shadow: 0 10px 40px rgba(0,0,0,.08);
+  --cv-font: 'Tajawal', Arial, sans-serif;
+}
+body[data-theme="dark"] {
+  --text: #f1f5f9;
+  --text-soft: #cbd5e1;
+  --text-muted: #64748b;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --border: #334155;
+  --shadow: 0 10px 40px rgba(0,0,0,.4);
+}
+body { background: var(--bg); color: var(--text); line-height: 1.6;
+  font-family: 'Tajawal', Arial, sans-serif; transition: background .3s, color .3s; }
+
+.topbar {
+  background: var(--card); padding: 14px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+  flex-wrap: wrap; gap: 10px;
+}
+.topbar h1 { font-size: 18px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.topbar h1::before { content:''; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; }
+.topbar .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn { cursor: pointer; border: none; border-radius: 8px; font-family: inherit;
+  font-size: 13px; font-weight: 600; padding: 8px 14px; transition: .2s; }
+.btn:disabled { opacity: .5; cursor: wait; }
+.btn-dark { background: var(--text); color: var(--card); }
+.btn-outline { background: var(--border); color: var(--text-soft); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-danger { background: #fee2e2; color: #dc2626; }
+.btn-success { background: #16a34a; color: #fff; }
+.btn-success:hover { background: #15803d; }
+.btn-ai { background: linear-gradient(135deg,#8b5cf6,#ec4899); color:#fff; font-weight: 700; }
+.btn-ai:hover { filter: brightness(1.1); }
+.btn-ai:disabled { opacity: .6; }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
+.ats-bar {
+  background: var(--card); padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.ats-label { font-weight: 700; font-size: 14px; }
+.ats-progress { flex: 1; min-width: 200px; height: 10px;
+  background: var(--border); border-radius: 10px; overflow: hidden; }
+.ats-fill { height: 100%; width: 0%; background: #ef4444; transition: .4s; border-radius: 10px; }
+.ats-score { font-weight: 900; font-size: 16px; }
+.ats-tips { width: 100%; font-size: 12px; color: var(--text-soft); margin-top: 6px; }
+.ats-tips span { display: inline-block; background: #fef3c7; color: #92400e;
+  padding: 3px 10px; border-radius: 6px; margin: 3px 3px 0 0; font-size: 11px; }
+
+.cvs-bar {
+  background: var(--card); padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.cvs-bar .label { font-weight: 700; font-size: 13px; color: var(--text-soft); }
+.cv-chip {
+  background: var(--border); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 20px; font-size: 12px;
+  cursor: pointer; transition: .2s; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px; color: var(--text);
+}
+.cv-chip:hover { background: var(--accent-light); border-color: var(--accent); }
+.cv-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.cv-chip .x { font-size: 14px; opacity: .6; }
+.cv-chip .x:hover { opacity: 1; }
+
+.app { display: grid; grid-template-columns: 440px 1fr; min-height: calc(100vh - 160px); }
+
+.form-panel {
+  background: var(--card); padding: 20px; overflow-y: auto;
+  max-height: calc(100vh - 160px); border-left: 1px solid var(--border);
+}
+.section { margin-bottom: 16px; border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; transition: .2s; }
+.section:hover { border-color: var(--accent); }
+.section h2 { font-size: 14px; color: var(--accent); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+.section h2 .ai-btns { display: flex; gap: 4px; }
+
+label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 5px; color: var(--text-soft); }
+input, textarea, select {
+  width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px;
+  font-size: 13px; font-family: inherit; margin-bottom: 10px;
+  background: var(--bg); color: var(--text); transition: .2s;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none; border-color: var(--accent); background: var(--card);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+textarea { resize: vertical; min-height: 70px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.btn-add { background: var(--accent-light); color: var(--accent); width: 100%; margin-top: 4px; }
+.btn-remove { background: #fee2e2; color: #dc2626; padding: 5px 10px; font-size: 11px; }
+
+.item-box { background: var(--bg); border: 1px dashed var(--border); border-radius: 10px;
+  padding: 10px; margin-bottom: 10px; }
+.item-box .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 6px; }
+.item-box .head b { font-size: 12px; color: var(--text-soft); flex: 1; }
+.item-box .head .tools { display: flex; gap: 4px; }
+
+.actions { display: flex; gap: 8px; margin-top: 18px; position: sticky;
+  bottom: 0; background: var(--card); padding-top: 12px;
+  border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+.preview-panel {
+  padding: 30px; overflow-y: auto; max-height: calc(100vh - 160px);
+  display: flex; justify-content: center; align-items: flex-start;
+}
+
+.cv {
+  width: 210mm; min-height: 297mm; background: #fff; padding: 18mm 16mm;
+  box-shadow: var(--shadow); color: #000; font-family: var(--cv-font);
+  font-size: 11pt; line-height: 1.5;
+}
+.cv * { font-family: inherit; }
+.cv .name { font-size: 20pt; font-weight: bold; text-align: center; letter-spacing: .5px; }
+.cv .job { font-size: 12pt; text-align: center; margin-top: 2px; }
+.cv .contact { text-align: center; font-size: 10pt; margin-top: 6px; }
+.cv .contact span { margin: 0 6px; }
+.cv hr { border: none; border-top: 1.5px solid currentColor; margin: 12px 0 14px; }
+.cv .section-title {
+  font-size: 12pt; font-weight: bold; text-transform: uppercase;
+  border-bottom: 1px solid currentColor; padding-bottom: 3px;
+  margin: 14px 0 8px; letter-spacing: 1px;
+}
+.cv .item { margin-bottom: 10px; }
+.cv .item-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+.cv .item-title { font-weight: bold; font-size: 11pt; }
+.cv .item-sub { font-size: 10.5pt; }
+.cv .item-date { font-size: 10pt; }
+.cv .item-desc { font-size: 10.5pt; margin-top: 3px; white-space: pre-wrap; }
+.cv .skills-list { font-size: 10.5pt; }
+.cv .skills-list span::after { content: ' • '; }
+.cv .skills-list span:last-child::after { content: ''; }
+.cv .summary { font-size: 10.5pt; text-align: justify; }
+
+.cv.tpl-professional .name { color: var(--accent); }
+.cv.tpl-professional .job { color: var(--accent); }
+.cv.tpl-professional hr { border-top-color: var(--accent); }
+.cv.tpl-professional .section-title { color: var(--accent); border-bottom-color: var(--accent); }
+
+.cv.tpl-executive .name {
+  font-size: 22pt; letter-spacing: 3px; color: #000;
+  padding-bottom: 8px; border-bottom: 3px double #000;
+}
+.cv.tpl-executive .job { font-size: 12pt; color: #333; letter-spacing: 2px; margin-top: 8px; }
+.cv.tpl-executive .section-title {
+  background: #000; color: #fff; padding: 5px 10px;
+  border: none; letter-spacing: 2px; margin: 16px 0 10px;
+}
+
+.cv.tpl-minimal .name { font-size: 18pt; text-align: right; letter-spacing: 0; color: #000; }
+.cv.tpl-minimal .job { text-align: right; font-size: 11pt; color: #666; margin-top: 2px; font-weight: 400; }
+.cv.tpl-minimal .contact { text-align: right; font-size: 9.5pt; color: #666; margin-top: 4px; }
+.cv.tpl-minimal hr { display: none; }
+.cv.tpl-minimal .section-title {
+  font-size: 11pt; text-transform: none; letter-spacing: 0;
+  color: #000; border-bottom: 1px solid #ccc; margin: 16px 0 8px;
+}
+
+.cv.font-tajawal { font-family: 'Tajawal', Arial, sans-serif; }
+.cv.font-cairo { font-family: 'Cairo', Arial, sans-serif; }
+.cv.font-plex { font-family: 'IBM Plex Sans Arabic', Arial, sans-serif; }
+
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--card); border-radius: 16px; padding: 24px;
+  max-width: 520px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  text-align: center; color: var(--text);
+}
+.modal h3 { font-size: 18px; margin-bottom: 14px; }
+.modal .qr-box { background: #fff; padding: 16px; border-radius: 12px;
+  display: inline-block; margin: 10px 0; }
+.modal .share-link {
+  width: 100%; padding: 10px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 12px; margin: 12px 0;
+  background: var(--bg); color: var(--text); font-family: monospace;
+}
+.modal .btns { display: flex; gap: 8px; margin-top: 12px; }
+.modal .btns button { flex: 1; }
+.modal .note { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+.ai-modal .modal { max-width: 640px; text-align: right; }
+.ai-modal textarea {
+  min-height: 140px; margin: 12px 0;
+  background: var(--bg); font-size: 13px;
+}
+.ai-status { font-size: 12px; color: var(--text-muted); margin: 6px 0; }
+.ai-status.loading { color: var(--accent); }
+.ai-status.error { color: #dc2626; }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--text); color: var(--card);
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 10px 40px rgba(0,0,0,.3);
+  transform: translateY(100px); opacity: 0;
+  transition: .3s; z-index: 2000;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #16a34a; color: #fff; }
+.toast.error { background: #dc2626; color: #fff; }
+
+.api-warning {
+  background: #fef3c7; color: #92400e;
+  padding: 10px 24px; font-size: 12px; font-weight: 600;
+  border-bottom: 1px solid #fcd34d;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+.api-warning button {
+  background: #92400e; color: #fff;
+  padding: 6px 12px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; border: none; cursor: pointer;
+}
+
+@media (max-width: 950px) {
+  .app { grid-template-columns: 1fr; }
+  .form-panel { max-height: none; border-left: none; border-bottom: 1px solid var(--border); }
+  .preview-panel { padding: 14px; max-height: none; }
+  .cv { width: 100%; min-height: auto; padding: 20px; font-size: 10pt; }
+}
+
+@media print {
+  body { background: #fff; }
+  .topbar, .ats-bar, .form-panel, .actions, .cvs-bar, .modal-bg, .toast, .api-warning { display: none !important; }
+  .app { display: block; }
+  .preview-panel { padding: 0; max-height: none; overflow: visible; display: block; }
+  .cv { width: 100%; box-shadow: none; min-height: auto; padding: 15mm; }
+  @page { margin: 0; size: A4; }
+}
+</style>
+</head>
+<body>
+
+<div class="api-warning" id="apiWarning" style="display:none;">
+  ⚠️ مفتاح Gemini غير مُعد — الذكاء الاصطناعي ما يشتغل
+  <button onclick="setApiKey()">➕ ضع المفتاح</button>
+</div>
+
+<div class="topbar">
+  <h1>📄 مولّد السيرة الذاتية — ATS Pro AI</h1>
+  <div class="btns">
+    <button class="btn btn-dark" onclick="toggleLang()">🌐 EN / ع</button>
+    <button class="btn btn-outline" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="btn btn-ai" onclick="translateCV()">🌐 ترجم السيرة</button>
+    <button class="btn btn-primary" onclick="openQR()">📱 QR</button>
+    <button class="btn btn-primary" onclick="openShare()">🔗 مشاركة</button>
+    <button class="btn btn-success" onclick="downloadWord()">📄 Word</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ PDF</button>
+  </div>
+</div>
+
+<div class="ats-bar">
+  <span class="ats-label">توافق ATS:</span>
+  <div class="ats-progress"><div class="ats-fill" id="atsFill"></div></div>
+  <span class="ats-score" id="atsScore">0%</span>
+  <div class="ats-tips" id="atsTips"></div>
+</div>
+
+<div class="cvs-bar">
+  <span class="label">📁 سيري:</span>
+  <div id="cvsList" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+  <button class="btn btn-outline" onclick="newCV()">➕ سيرة جديدة</button>
+</div>
+
+<div class="app">
+
+  <div class="form-panel">
+
+    <div class="section">
+      <h2>🎨 التصميم</h2>
+      <label>القالب</label>
+      <select id="template">
+        <option value="professional">Professional — احترافي</option>
+        <option value="executive">Executive — تنفيذي</option>
+        <option value="minimal">Minimal — بسيط</option>
+      </select>
+      <label>اللون</label>
+      <select id="color">
+        <option value="#2563eb">أزرق</option>
+        <option value="#0f172a">أسود</option>
+        <option value="#64748b">رمادي</option>
+        <option value="#16a34a">أخضر</option>
+        <option value="#7c3aed">بنفسجي</option>
+      </select>
+      <label>الخط</label>
+      <select id="font">
+        <option value="tajawal">Tajawal</option>
+        <option value="cairo">Cairo</option>
+        <option value="plex">IBM Plex Sans Arabic</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <h2>👤 البيانات الشخصية</h2>
+      <label>الاسم الكامل</label><input id="name">
+      <label>المسمى الوظيفي</label><input id="jobTitle">
+      <label>
+        الملخص المهني
+        <button class="btn btn-ai btn-sm" style="float:left;" onclick="aiImproveSummary()">✨ حسّن</button>
+      </label>
+      <textarea id="summary"></textarea>
+      <div class="row">
+        <div><label>الجوال</label><input id="phone"></div>
+        <div><label>الإيميل</label><input id="email"></div>
+      </div>
+      <div class="row">
+        <div><label>المدينة</label><input id="city"></div>
+        <div><label>لينكدإن</label><input id="linkedin"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>💼 الخبرات العملية</h2>
+      <div id="expList"></div>
+      <button class="btn btn-add" onclick="addItem('exp')">+ إضافة خبرة</button>
+    </div>
+
+    <div class="section">
+      <h2>🎓 التعليم</h2>
+      <div id="eduList"></div>
+      <button class="btn btn-add" onclick="addItem('edu')">+ إضافة تعليم</button>
+    </div>
+
+    <div class="section">
+      <h2>
+        ⚡ المهارات
+        <button class="btn btn-ai btn-sm" onclick="aiSuggestSkills()">💡 اقترح</button>
+      </h2>
+      <label>مفصولة بفاصلة</label><input id="skills">
+    </div>
+
+    <div class="section">
+      <h2>🌍 اللغات</h2>
+      <label>مفصولة بفاصلة</label><input id="langs">
+    </div>
+
+    <div class="section">
+      <h2>🏅 الشهادات والدورات</h2>
+      <div id="certList"></div>
+      <button class="btn btn-add" onclick="addItem('cert')">+ إضافة شهادة</button>
+    </div>
+
+    <div class="section">
+      <h2>🚀 المشاريع</h2>
+      <div id="projList"></div>
+      <button class="btn btn-add" onclick="addItem('proj')">+ إضافة مشروع</button>
+    </div>
+
+    <div class="section">
+      <h2>🤝 الأعمال التطوعية</h2>
+      <div id="volList"></div>
+      <button class="btn btn-add" onclick="addItem('vol')">+ إضافة تطوع</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" style="flex:1" onclick="window.print()">⬇️ PDF</button>
+      <button class="btn btn-success" onclick="downloadWord()">📄 Word</button>
+      <button class="btn btn-outline" onclick="exportJSON()">📤 JSON</button>
+      <button class="btn btn-outline" onclick="importJSON()">📥 استيراد</button>
+      <button class="btn btn-danger" onclick="clearAll()">🗑️</button>
+      <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileImport(event)">
+    </div>
+  </div>
+
+  <div class="preview-panel">
+    <div class="cv" id="cv"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="qrModal">
+  <div class="modal">
+    <h3>📱 QR Code للسيرة</h3>
+    <div class="qr-box"><canvas id="qrCanvas"></canvas></div>
+    <div class="btns">
+      <button class="btn btn-primary" onclick="downloadQR()">⬇️ تحميل QR</button>
+      <button class="btn btn-outline" onclick="closeModal('qrModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="shareModal">
+  <div class="modal">
+    <h3>🔗 رابط المشاركة</h3>
+    <input class="share-link" id="shareLink" readonly>
+    <div class="btns">
+      <button class="btn btn-primary" onclick="copyLink()">📋 نسخ</button>
+      <button class="btn btn-success" onclick="shareWhatsapp()">💬 واتساب</button>
+      <button class="btn btn-outline" onclick="closeModal('shareModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg ai-modal" id="aiModal">
+  <div class="modal">
+    <h3 id="aiModalTitle">✨ مساعد AI</h3>
+    <p class="ai-status" id="aiStatus">جاهز</p>
+    <textarea id="aiOutput"></textarea>
+    <div class="btns">
+      <button class="btn btn-success" onclick="applyAI()">✅ تطبيق</button>
+      <button class="btn btn-outline" onclick="closeModal('aiModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="apiModal">
+  <div class="modal">
+    <h3>🔑 مفتاح Gemini API</h3>
+    <p class="note" style="text-align:right;">
+      احصل على مفتاح مجاني من:
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com</a>
+    </p>
+    <input class="share-link" id="apiInput" placeholder="AIza..." style="font-family:monospace;text-align:left;">
+    <div class="btns">
+      <button class="btn btn-primary" onclick="saveApiKey()">💾 حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('apiModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   🔑🔑🔑 ضع مفتاح Gemini هنا 👇 🔑🔑🔑
+   ═══════════════════════════════════════════════════════════
+   احصل على مفتاح مجاني من:
+   https://aistudio.google.com/app/apikey
+
+   استبدل النص اللي بين علامتي التنصيص بمفتاحك
+   ═══════════════════════════════════════════════════════════ */
+const HARDCODED_KEY = 'AIzaضع_المفتاح_هنا';
+/* ═══════════════════════════════════════════════════════════ */
+
+let LANG = localStorage.getItem('cvLang') || 'ar';
+let THEME = localStorage.getItem('cvTheme') || 'light';
+let API_KEY = localStorage.getItem('geminiKey') || HARDCODED_KEY;
+let AI_TARGET = null;
+
+const T = {
+  ar: {
+    summary:'الملخص المهني', experience:'الخبرات العملية', education:'التعليم',
+    skills:'المهارات', languages:'اللغات', certs:'الشهادات والدورات',
+    projects:'المشاريع', volunteering:'الأعمال التطوعية',
+    expEmpty:'لم تُضف خبرات بعد', eduEmpty:'لم تُضف تعليم بعد'
+  },
+  en: {
+    summary:'Professional Summary', experience:'Experience', education:'Education',
+    skills:'Skills', languages:'Languages', certs:'Certifications',
+    projects:'Projects', volunteering:'Volunteering',
+    expEmpty:'No experience added yet', eduEmpty:'No education added yet'
+  }
+};
+function t(k) { return T[LANG][k]; }
+
+const FIELDS = ['name','jobTitle','summary','phone','email','city','linkedin','skills','langs'];
+const STYLE_FIELDS = ['template','color','font'];
+const LIST_TYPES = ['exp','edu','cert','proj','vol'];
+
+const LISTS = {
+  exp: { label:{ar:'خبرة',en:'Experience'}, fields:[
+    {key:'company',ar:'الشركة',en:'Company'},
+    {key:'role',ar:'المسمى الوظيفي',en:'Role'},
+    {key:'date',ar:'الفترة',en:'Period'},
+    {key:'desc',ar:'الوصف',en:'Description',type:'textarea',ai:'desc'}
+  ]},
+  edu: { label:{ar:'تعليم',en:'Education'}, fields:[
+    {key:'school',ar:'الجامعة / المدرسة',en:'School'},
+    {key:'degree',ar:'التخصص / الدرجة',en:'Degree'},
+    {key:'date',ar:'السنة',en:'Year'}
+  ]},
+  cert: { label:{ar:'شهادة',en:'Certification'}, fields:[
+    {key:'name',ar:'اسم الشهادة',en:'Certification'},
+    {key:'issuer',ar:'الجهة المانحة',en:'Issuer'},
+    {key:'date',ar:'التاريخ',en:'Date'}
+  ]},
+  proj: { label:{ar:'مشروع',en:'Project'}, fields:[
+    {key:'name',ar:'اسم المشروع',en:'Project'},
+    {key:'role',ar:'دورك',en:'Role'},
+    {key:'date',ar:'التاريخ',en:'Date'},
+    {key:'desc',ar:'الوصف',en:'Description',type:'textarea',ai:'desc'}
+  ]},
+  vol: { label:{ar:'تطوع',en:'Volunteering'}, fields:[
+    {key:'org',ar:'الجهة',en:'Organization'},
+    {key:'role',ar:'الدور',en:'Role'},
+    {key:'date',ar:'الفترة',en:'Period'},
+    {key:'desc',ar:'الوصف',en:'Description',type:'textarea',ai:'desc'}
+  ]}
+};
+
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => toast.className = 'toast ' + type, 3000);
+}
+
+function applyTheme() {
+  document.body.setAttribute('data-theme', THEME);
+  document.getElementById('themeBtn').textContent = THEME === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  THEME = THEME === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('cvTheme', THEME);
+  applyTheme();
+}
+
+function setApiKey() {
+  document.getElementById('apiInput').value = API_KEY;
+  document.getElementById('apiModal').classList.add('show');
+}
+function saveApiKey() {
+  const key = document.getElementById('apiInput').value.trim();
+  if (!key) { showToast('⚠️ مفتاح فاضي', 'error'); return; }
+  API_KEY = key;
+  localStorage.setItem('geminiKey', key);
+  closeModal('apiModal');
+  checkApiKey();
+  showToast('✅ تم حفظ المفتاح', 'success');
+}
+function checkApiKey() {
+  const hasKey = API_KEY && API_KEY !== 'AIzaضع_المفتاح_هنا';
+  document.getElementById('apiWarning').style.display = hasKey ? 'none' : 'flex';
+}
+
+async function callGemini(prompt) {
+  if (!API_KEY || API_KEY === 'AIzaضع_المفتاح_هنا') {
+    showToast('⚠️ ضع مفتاح Gemini أول', 'error');
+    setApiKey();
+    throw new Error('No API key');
+  }
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('API Error: ' + res.status);
+  }
+  const data = await res.json();
+  if (!data.candidates || !data.candidates[0]) throw new Error('No response');
+  return data.candidates[0].content.parts[0].text.trim();
+}
+
+async function aiImproveSummary() {
+  const current = document.getElementById('summary').value.trim();
+  const jobTitle = document.getElementById('jobTitle').value.trim();
+  const name = document.getElementById('name').value.trim();
+  openAIModal('✨ حسّن الملخص المهني');
+  setAIStatus('⏳ جاري التحسين...', 'loading');
+  const prompt = `أنت خبير في كتابة السير الذاتية المتوافقة مع أنظمة ATS.
+اكتب ملخصًا مهنيًا احترافيًا باللغة ${LANG === 'ar' ? 'العربية' : 'الإنجليزية'}.
+الاسم: ${name || 'غير محدد'}
+المسمى الوظيفي: ${jobTitle || 'غير محدد'}
+الملخص الحالي: ${current || '(لا يوجد)'}
+المطلوب: ملخص من 2-3 أسطر، بأسلوب احترافي، بدون رموز أو إيموجي. اكتب الملخص فقط.`;
+  try {
+    const result = await callGemini(prompt);
+    document.getElementById('aiOutput').value = result;
+    AI_TARGET = 'summary';
+    setAIStatus('✅ جاهز — اضغط تطبيق', 'success');
+  } catch (e) {
+    setAIStatus('❌ خطأ: ' + e.message, 'error');
+  }
+}
+
+async function aiSuggestSkills() {
+  const jobTitle = document.getElementById('jobTitle').value.trim();
+  const current = document.getElementById('skills').value.trim();
+  if (!jobTitle) { showToast('⚠️ اكتب المسمى الوظيفي أول', 'error'); return; }
+  openAIModal('💡 اقتراح مهارات');
+  setAIStatus('⏳ جاري الاقتراح...', 'loading');
+  const prompt = `أنت خبير في السير الذاتية المتوافقة مع ATS.
+المسمى الوظيفي: ${jobTitle}
+المهارات الحالية: ${current || '(لا يوجد)'}
+اقترح 10 مهارات مناسبة باللغة ${LANG === 'ar' ? 'العربية' : 'الإنجليزية'}، مفصولة بفاصلة، بدون ترقيم.`;
+  try {
+    const result = await callGemini(prompt);
+    const cleaned = result.replace(/^[-\d. •]+/gm, '').replace(/\n+/g, ', ').trim();
+    document.getElementById('aiOutput').value = cleaned;
+    AI_TARGET = 'skills';
+    setAIStatus('✅ جاهز — اضغط تطبيق', 'success');
+  } catch (e) {
+    setAIStatus('❌ خطأ: ' + e.message, 'error');
+  }
+}
+
+async function aiImproveDesc(textareaId) {
+  const textarea = document.getElementById(textareaId);
+  const current = textarea.value.trim();
+  const box = textarea.closest('.item-box');
+  const role = box.querySelector('[data-key="role"]')?.value.trim() || '';
+  const company = box.querySelector('[data-key="company"]')?.value.trim() || '';
+  const projectName = box.querySelector('[data-key="name"]')?.value.trim() || '';
+  openAIModal('✍️ تحسين الوصف');
+  setAIStatus('⏳ جاري التحسين...', 'loading');
+  const prompt = `أنت خبير في كتابة السير الذاتية.
+حوّل الوصف التالي إلى 4-5 نقاط قوية باللغة ${LANG === 'ar' ? 'العربية' : 'الإنجليزية'}.
+المسمى: ${role || projectName || 'غير محدد'}
+الجهة: ${company || 'غير محدد'}
+الوصف: ${current || '(لا يوجد)'}
+كل نقطة تبدأ بـ - وتكون قصيرة.`;
+  try {
+    const result = await callGemini(prompt);
+    document.getElementById('aiOutput').value = result;
+    AI_TARGET = textareaId;
+    setAIStatus('✅ جاهز — اضغط تطبيق', 'success');
+  } catch (e) {
+    setAIStatus('❌ خطأ: ' + e.message, 'error');
+  }
+}
+
+async function translateCV() {
+  const targetLang = LANG === 'ar' ? 'English' : 'العربية';
+  if (!confirm(`ترجمة السيرة إلى ${targetLang}؟`)) return;
+  openAIModal('🌐 ترجمة السيرة');
+  setAIStatus('⏳ جاري الترجمة...', 'loading');
+  const v = id => document.getElementById(id).value.trim();
+  const data = {
+    name: v('name'), jobTitle: v('jobTitle'), summary: v('summary'),
+    city: v('city'), skills: v('skills'), langs: v('langs'),
+    exp: getItems('exp').filter(e => e.role || e.company),
+    edu: getItems('edu').filter(e => e.degree || e.school),
+    cert: getItems('cert').filter(c => c.name),
+    proj: getItems('proj').filter(p => p.name),
+    vol: getItems('vol').filter(x => x.role || x.org)
+  };
+  const prompt = `ترجم السيرة التالية إلى ${targetLang}. احتفظ بالبنية. أعد JSON فقط بدون شرح.
+${JSON.stringify(data)}`;
+  try {
+    const result = await callGemini(prompt);
+    let json = result.replace(/```json/g, '').replace(/```/g, '').trim();
+    const parsed = JSON.parse(json);
+    ['name','jobTitle','summary','city','skills','langs'].forEach(k => {
+      if (parsed[k]) document.getElementById(k).value = parsed[k];
+    });
+    const fillList = (type, items) => {
+      if (!items || !items.length) return;
+      document.getElementById(type + 'List').innerHTML = '';
+      items.forEach(item => addItem(type, item, true));
+    };
+    fillList('exp', parsed.exp);
+    fillList('edu', parsed.edu);
+    fillList('cert', parsed.cert);
+    fillList('proj', parsed.proj);
+    fillList('vol', parsed.vol);
+    if (!document.querySelector('#expList .item-box')) addItem('exp', {}, true);
+    if (!document.querySelector('#eduList .item-box')) addItem('edu', {}, true);
+    toggleLang();
+    closeModal('aiModal');
+    showToast('✅ تمت الترجمة', 'success');
+    render();
+  } catch (e) {
+    setAIStatus('❌ فشل: ' + e.message, 'error');
+  }
+}
+
+function openAIModal(title) {
+  document.getElementById('aiModalTitle').textContent = title;
+  document.getElementById('aiOutput').value = '';
+  setAIStatus('جاهز');
+  document.getElementById('aiModal').classList.add('show');
+}
+function setAIStatus(msg, cls = '') {
+  const el = document.getElementById('aiStatus');
+  el.textContent = msg;
+  el.className = 'ai-status ' + cls;
+}
+function applyAI() {
+  if (!AI_TARGET) return;
+  const value = document.getElementById('aiOutput').value.trim();
+  if (!value) { showToast('⚠️ ما فيه نص', 'error'); return; }
+  const el = document.getElementById(AI_TARGET);
+  if (el) el.value = value;
+  closeModal('aiModal');
+  render();
+  showToast('✅ تم التطبيق', 'success');
+  AI_TARGET = null;
+}
+
+let CVS = JSON.parse(localStorage.getItem('cvList') || '{}');
+let CURRENT_ID = localStorage.getItem('cvCurrent') || null;
+let DESC_COUNTER = 0;
+
+function genId() { return 'cv_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+
+function getCurrentData() {
+  const data = {};
+  FIELDS.forEach(f => data[f] = document.getElementById(f).value);
+  STYLE_FIELDS.forEach(f => data[f] = document.getElementById(f).value);
+  LIST_TYPES.forEach(k => data[k] = getItems(k));
+  const personName = document.getElementById('name').value.trim();
+  data.name = personName || (LANG==='ar' ? 'سيرة بدون اسم' : 'Untitled CV');
+  data.id = CURRENT_ID;
+  data.updated = Date.now();
+  return data;
+}
+
+function saveCurrent() {
+  if (!CURRENT_ID) {
+    CURRENT_ID = genId();
+    localStorage.setItem('cvCurrent', CURRENT_ID);
+  }
+  CVS[CURRENT_ID] = getCurrentData();
+  localStorage.setItem('cvList', JSON.stringify(CVS));
+  renderCVsList();
+}
+
+function loadCV(id) {
+  const d = CVS[id];
+  if (!d) return;
+  CURRENT_ID = id;
+  localStorage.setItem('cvCurrent', id);
+  FIELDS.forEach(f => document.getElementById(f).value = d[f] || '');
+  STYLE_FIELDS.forEach(f => document.getElementById(f).value = d[f] || document.getElementById(f).options[0].value);
+  LIST_TYPES.forEach(k => {
+    document.getElementById(k + 'List').innerHTML = '';
+    if (d[k] && d[k].length) d[k].forEach(item => addItem(k, item, true));
+  });
+  if (!document.querySelector('#expList .item-box')) addItem('exp', {}, true);
+  if (!document.querySelector('#eduList .item-box')) addItem('edu', {}, true);
+  render();
+}
+
+function newCV() {
+  if (!confirm(LANG==='ar'?'إنشاء سيرة جديدة؟':'New CV?')) return;
+  saveCurrent();
+  CURRENT_ID = genId();
+  localStorage.setItem('cvCurrent', CURRENT_ID);
+  FIELDS.forEach(f => document.getElementById(f).value = '');
+  LIST_TYPES.forEach(k => document.getElementById(k + 'List').innerHTML = '');
+  addItem('exp', {}, true); addItem('edu', {}, true);
+  const name = prompt(LANG==='ar'?'اسم السيرة:':'CV name:', '');
+  if (name) document.getElementById('name').value = name;
+  render();
+}
+
+function deleteCV(id, e) {
+  e.stopPropagation();
+  if (!confirm(LANG==='ar'?'حذف السيرة؟':'Delete?')) return;
+  delete CVS[id];
+  localStorage.setItem('cvList', JSON.stringify(CVS));
+  if (CURRENT_ID === id) {
+    const rem = Object.keys(CVS);
+    if (rem.length) loadCV(rem[0]);
+    else newCV();
+  } else renderCVsList();
+}
+
+function renderCVsList() {
+  const list = document.getElementById('cvsList');
+  list.innerHTML = '';
+  Object.keys(CVS).forEach(id => {
+    const d = CVS[id];
+    const chip = document.createElement('span');
+    chip.className = 'cv-chip' + (id === CURRENT_ID ? ' active' : '');
+    chip.innerHTML = `${d.name || 'Untitled'} <span class="x" onclick="deleteCV('${id}', event)">✕</span>`;
+    chip.onclick = () => loadCV(id);
+    list.appendChild(chip);
+  });
+}
+
+function addItem(type, data = {}, silent = false) {
+  const cfg = LISTS[type];
+  const container = document.getElementById(type + 'List');
+  const box = document.createElement('div');
+  box.className = 'item-box';
+  const aiId = 'ai-desc-' + (++DESC_COUNTER);
+
+  let html = `<div class="head">
+    <b>${cfg.label[LANG]}</b>
+    <div class="tools">`;
+  const hasDesc = cfg.fields.some(f => f.ai === 'desc');
+  if (hasDesc) {
+    html += `<button class="btn btn-ai btn-sm" onclick="aiImproveDesc('${aiId}')">✨ حسّن الوصف</button>`;
+  }
+  html += `<button class="btn btn-remove" onclick="this.closest('.item-box').remove(); render()">
+      ${LANG==='ar'?'حذف':'Remove'}
+    </button></div></div>`;
+
+  cfg.fields.forEach(f => {
+    const label = f[LANG] || f.ar;
+    const isDesc = f.ai === 'desc';
+    if (f.type === 'textarea') {
+      html += `<label>${label}</label><textarea ${isDesc ? 'id="'+aiId+'"' : ''} data-key="${f.key}">${data[f.key]||''}</textarea>`;
+    } else {
+      html += `<label>${label}</label><input data-key="${f.key}" value="${(data[f.key]||'').replace(/"/g,'&quot;')}">`;
+    }
+  });
+  box.innerHTML = html;
+  box.querySelectorAll('input, textarea').forEach(i => i.addEventListener('input', render));
+  container.appendChild(box);
+  if (!silent) render();
+}
+
+function getItems(type) {
+  const items = [];
+  document.querySelectorAll(`#${type}List .item-box`).forEach(box => {
+    const obj = {};
+    box.querySelectorAll('input, textarea').forEach(inp => obj[inp.dataset.key] = inp.value);
+    items.push(obj);
+  });
+  return items;
+}
+
+function init() {
+  applyTheme();
+  checkApiKey();
+  const ids = Object.keys(CVS);
+  if (ids.length && CURRENT_ID && CVS[CURRENT_ID]) loadCV(CURRENT_ID);
+  else if (ids.length) loadCV(ids[0]);
+  else newCVEmpty();
+  renderCVsList();
+  loadFromURL();
+}
+
+function newCVEmpty() {
+  CURRENT_ID = genId();
+  localStorage.setItem('cvCurrent', CURRENT_ID);
+  addItem('exp', {}, true);
+  addItem('edu', {}, true);
+  render();
+}
+
+function clearAll() {
+  if (!confirm(LANG==='ar'?'حذف البيانات؟':'Clear?')) return;
+  FIELDS.forEach(f => document.getElementById(f).value = '');
+  LIST_TYPES.forEach(k => document.getElementById(k + 'List').innerHTML = '');
+  addItem('exp', {}, true); addItem('edu', {}, true);
+  render();
+}
+
+function toggleLang() {
+  LANG = LANG === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('cvLang', LANG);
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+  LIST_TYPES.forEach(type => {
+    document.querySelectorAll(`#${type}List .item-box`).forEach(box => {
+      const head = box.querySelector('.head b');
+      if (head) head.textContent = LISTS[type].label[LANG];
+      const btn = box.querySelector('.btn-remove');
+      if (btn) btn.textContent = LANG==='ar'?'حذف':'Remove';
+    });
+  });
+  render();
+}
+
+function calcATS() {
+  const v = id => document.getElementById(id).value.trim();
+  let score = 0;
+  const tips = [];
+  if (v('name')) score += 8; else tips.push(LANG==='ar'?'أضف اسمك':'Add name');
+  if (v('jobTitle')) score += 7; else tips.push(LANG==='ar'?'المسمى الوظيفي':'Job title');
+  if (v('phone')) score += 8; else tips.push(LANG==='ar'?'الجوال':'Phone');
+  if (v('email')) score += 8; else tips.push(LANG==='ar'?'الإيميل':'Email');
+  if (v('city')) score += 4;
+  const sum = v('summary');
+  if (sum.length >= 80) score += 12;
+  else if (sum.length >= 30) score += 6;
+  else tips.push(LANG==='ar'?'الملخص قصير':'Summary short');
+  const exp = getItems('exp').filter(e => e.company || e.role);
+  if (exp.length >= 2) score += 15;
+  else if (exp.length === 1) score += 8;
+  else tips.push(LANG==='ar'?'أضف خبرة':'Experience');
+  const edu = getItems('edu').filter(e => e.school || e.degree);
+  if (edu.length) score += 10; else tips.push(LANG==='ar'?'التعليم':'Education');
+  const skills = v('skills').split(',').filter(s=>s.trim());
+  if (skills.length >= 5) score += 12;
+  else if (skills.length >= 3) score += 6;
+  else tips.push(LANG==='ar'?'5 مهارات':'5 skills');
+  const langs = v('langs').split(',').filter(s=>s.trim());
+  if (langs.length) score += 6; else tips.push(LANG==='ar'?'اللغات':'Languages');
+  if (getItems('cert').filter(c => c.name).length) score += 5;
+  if (getItems('proj').filter(p => p.name).length) score += 5;
+  score = Math.min(score, 100);
+  const fill = document.getElementById('atsFill');
+  const scr = document.getElementById('atsScore');
+  const tip = document.getElementById('atsTips');
+  fill.style.width = score + '%';
+  fill.style.background = score >= 80 ? '#16a34a' : score >= 50 ? '#f59e0b' : '#ef4444';
+  scr.textContent = score + '%';
+  scr.style.color = fill.style.background;
+  tip.innerHTML = tips.map(x => `<span>⚠️ ${x}</span>`).join('');
+}
+
+function exportJSON() {
+  const data = getCurrentData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = (data.name || 'cv') + '.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function importJSON() { document.getElementById('fileInput').click(); }
+function handleFileImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      FIELDS.forEach(f => { if (d[f] !== undefined) document.getElementById(f).value = d[f]; });
+      STYLE_FIELDS.forEach(f => { if (d[f] !== undefined) document.getElementById(f).value = d[f]; });
+      LIST_TYPES.forEach(k => {
+        document.getElementById(k + 'List').innerHTML = '';
+        if (d[k] && d[k].length) d[k].forEach(item => addItem(k, item, true));
+      });
+      if (!document.querySelector('#expList .item-box')) addItem('exp', {}, true);
+      if (!document.querySelector('#eduList .item-box')) addItem('edu', {}, true);
+      render();
+      showToast('✅ تم الاستيراد', 'success');
+    } catch(err) { showToast('❌ ملف غير صالح', 'error'); }
+  };
+  reader.readAsText(file);
+}
+
+function downloadWord() {
+  const cvContent = document.getElementById('cv').innerHTML;
+  const isRTL = LANG === 'ar';
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>CV</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  body { font-family: Arial, sans-serif; font-size: 11pt; direction: ${isRTL?'rtl':'ltr'}; text-align: ${isRTL?'right':'left'}; color: #000; }
+  .name { font-size: 20pt; font-weight: bold; text-align: center; }
+  .job { font-size: 12pt; text-align: center; }
+  .contact { text-align: center; font-size: 10pt; }
+  hr { border: none; border-top: 1px solid #000; margin: 10px 0; }
+  .section-title { font-size: 12pt; font-weight: bold; text-transform: uppercase;
+    border-bottom: 1px solid #000; padding-bottom: 3px; margin: 12px 0 6px; }
+  .item { margin-bottom: 8px; }
+  .item-title { font-weight: bold; }
+  .skills-list span::after { content: ' • '; }
+  .skills-list span:last-child::after { content: ''; }
+</style></head><body>${cvContent}</body></html>`;
+  const blob = new Blob(['\ufeff', html], {type: 'application/msword'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const name = document.getElementById('name').value.trim() || 'CV';
+  a.download = name.replace(/\s+/g,'_') + '.doc';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function getShareURL() {
+  const data = getCurrentData();
+  const json = JSON.stringify(data);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const base = window.location.href.split('?')[0].split('#')[0];
+  return base + '?cv=' + encoded;
+}
+function openQR() {
+  const url = getShareURL();
+  const canvas = document.getElementById('qrCanvas');
+  const size = 260;
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => ctx.drawImage(img, 0, 0, size, size);
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(url);
+  document.getElementById('qrModal').classList.add('show');
+}
+function downloadQR() {
+  const a = document.createElement('a');
+  a.href = document.getElementById('qrCanvas').toDataURL('image/png');
+  a.download = 'cv-qr.png'; a.click();
+}
+function openShare() {
+  document.getElementById('shareLink').value = getShareURL();
+  document.getElementById('shareModal').classList.add('show');
+}
+function copyLink() {
+  const inp = document.getElementById('shareLink');
+  inp.select(); document.execCommand('copy');
+  showToast('✅ تم النسخ', 'success');
+}
+function shareWhatsapp() {
+  window.open('https://wa.me/?text=' + encodeURIComponent(getShareURL()), '_blank');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function loadFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const cv = params.get('cv');
+  if (!cv) return;
+  try {
+    const json = decodeURIComponent(escape(atob(cv)));
+    const d = JSON.parse(json);
+    const id = genId(); d.id = id;
+    if (!d.name) d.name = 'سيرة مشتركة';
+    CVS[id] = d; CURRENT_ID = id;
+    localStorage.setItem('cvList', JSON.stringify(CVS));
+    localStorage.setItem('cvCurrent', id);
+    loadCV(id);
+    showToast('✅ تم تحميل السيرة', 'success');
+  } catch(e) { showToast('❌ رابط غير صالح', 'error'); }
+}
+
+function render() {
+  const v = id => document.getElementById(id).value.trim();
+  const cv = document.getElementById('cv');
+  cv.setAttribute('dir', LANG === 'ar' ? 'rtl' : 'ltr');
+  const color = document.getElementById('color').value;
+  const tpl = document.getElementById('template').value;
+  const font = document.getElementById('font').value;
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-dark', color);
+  document.documentElement.style.setProperty('--accent-light', color + '22');
+  cv.className = 'cv tpl-' + tpl + ' font-' + font;
+
+  const skills = v('skills').split(',').map(s=>s.trim()).filter(Boolean);
+  const langs = v('langs').split(',').map(s=>s.trim()).filter(Boolean);
+  const contact = [v('phone'), v('email'), v('city'), v('linkedin')].filter(Boolean);
+
+  const rExp = () => {
+    const items = getItems('exp').filter(e => e.company || e.role);
+    if (!items.length) return `<p style="color:#94a3b8;font-size:10.5pt">${t('expEmpty')}</p>`;
+    return items.map(e => `<div class="item"><div class="item-head"><div>
+      <div class="item-title">${e.role||''}</div>
+      <div class="item-sub">${e.company||''}</div></div>
+      <div class="item-date">${e.date||''}</div></div>
+      ${e.desc ? `<div class="item-desc">${e.desc}</div>` : ''}</div>`).join('');
+  };
+  const rEdu = () => {
+    const items = getItems('edu').filter(e => e.school || e.degree);
+    if (!items.length) return `<p style="color:#94a3b8;font-size:10.5pt">${t('eduEmpty')}</p>`;
+    return items.map(e => `<div class="item"><div class="item-head"><div>
+      <div class="item-title">${e.degree||''}</div>
+      <div class="item-sub">${e.school||''}</div></div>
+      <div class="item-date">${e.date||''}</div></div></div>`).join('');
+  };
+  const rCert = () => getItems('cert').filter(c => c.name).map(c => `<div class="item"><div class="item-head"><div>
+      <div class="item-title">${c.name||''}</div>
+      <div class="item-sub">${c.issuer||''}</div></div>
+      <div class="item-date">${c.date||''}</div></div></div>`).join('');
+  const rProj = () => getItems('proj').filter(p => p.name).map(p => `<div class="item"><div class="item-head"><div>
+      <div class="item-title">${p.name||''}</div>
+      <div class="item-sub">${p.role||''}</div></div>
+      <div class="item-date">${p.date||''}</div></div>
+      ${p.desc ? `<div class="item-desc">${p.desc}</div>` : ''}</div>`).join('');
+  const rVol = () => getItems('vol').filter(x => x.org || x.role).map(x => `<div class="item"><div class="item-head"><div>
+      <div class="item-title">${x.role||''}</div>
+      <div class="item-sub">${x.org||''}</div></div>
+      <div class="item-date">${x.date||''}</div></div>
+      ${x.desc ? `<div class="item-desc">${x.desc}</div>` : ''}</div>`).join('');
+
+  cv.innerHTML = `
+    <div class="name">${v('name') || (LANG==='ar'?'اسمك الكامل':'Your Name')}</div>
+    ${v('jobTitle') ? `<div class="job">${v('jobTitle')}</div>` : ''}
+    ${contact.length ? `<div class="contact">${contact.map(c=>`<span>${c}</span>`).join(' | ')}</div>` : ''}
+    <hr>
+    ${v('summary') ? `<div class="section-title">${t('summary')}</div><p class="summary">${v('summary')}</p>` : ''}
+    <div class="section-title">${t('experience')}</div>${rExp()}
+    <div class="section-title">${t('education')}</div>${rEdu()}
+    ${skills.length ? `<div class="section-title">${t('skills')}</div><div class="skills-list">${skills.map(s=>`<span>${s}</span>`).join('')}</div>` : ''}
+    ${langs.length ? `<div class="section-title">${t('languages')}</div><div class="skills-list">${langs.map(s=>`<span>${s}</span>`).join('')}</div>` : ''}
+    ${rCert() ? `<div class="section-title">${t('certs')}</div>${rCert()}` : ''}
+    ${rProj() ? `<div class="section-title">${t('projects')}</div>${rProj()}` : ''}
+    ${rVol() ? `<div class="section-title">${t('volunteering')}</div>${rVol()}` : ''}
+  `;
+  saveCurrent();
+  calcATS();
+}
+
+FIELDS.forEach(f => {
+  const el = document.getElementById(f);
+  if (el) el.addEventListener('input', render);
+});
+STYLE_FIELDS.forEach(f => {
+  const el = document.getElementById(f);
+  if (el) el.addEventListener('change', render);
+});
+init();
+</script>
+
+</body>
+</html>
